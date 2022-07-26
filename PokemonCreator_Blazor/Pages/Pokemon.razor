@@ -1,0 +1,86 @@
+﻿@page "/Pokemon"
+@using Tewr.Blazor.FileReader
+@using System.IO;
+@using PKHeX.Core;
+@using PokemonCreator;
+@inherits PokemonCreation
+
+<h3>Pokemon</h3>
+
+<input type="file" @ref=inputTypeFileElement />
+<br /><br />
+<button @onclick=ReadFile>Read file</button>
+
+<br /><br />
+<Collapsible Title=@PokemonNameRender Collapsed="true" Value="">
+<ul class = "myUL">
+    @foreach (var spec in Species)
+    {
+        <li @onclick="@(e => {Entity.Species = spec.Value; RenderCurrentPokemon();})">@spec.Text @((MarkupString)PokemonSprites.PokemonBaseSpriteHTML(spec.Value))</li>
+    }
+</ul>
+</Collapsible>
+@if (CanHoldItems)
+{
+    <Collapsible Title=@PokemonItemRender Collapsed="true" Value="">
+        <ul class = "myUL">
+            @foreach (var it in Items)
+            {
+                <li @onclick="@(e => {Entity.HeldItem = it.Value; RenderCurrentPokemon();})">@it.Text @((MarkupString)PokemonSprites.PokemonItemSpriteHTML(it.Value))</li>
+            }
+        </ul>
+    </Collapsible>
+}
+<br /><p class = "category">Moves</p>
+<Collapsible Title=@Move1Render Collapsed="true" Value="">
+<ul class = "myUL">
+    @foreach (var m in GetLegalMoves())
+    {
+        <li @onclick="@(e => {Entity.Move1 = m.Value; RenderCurrentPokemon();})">@m.Text</li>
+    }
+</ul>
+</Collapsible>
+<Collapsible Title=@Move2Render Collapsed="true" Value="">
+<ul class = "myUL">
+    @foreach (var m in GetLegalMoves())
+    {
+        <li @onclick="@(e => {Entity.Move2 = m.Value; RenderCurrentPokemon();})">@m.Text</li>
+    }
+</ul>
+</Collapsible>
+<Collapsible Title=@Move3Render Collapsed="true" Value="">
+<ul class = "myUL">
+    @foreach (var m in GetLegalMoves())
+    {
+        <li @onclick="@(e => {Entity.Move3 = m.Value; RenderCurrentPokemon();})">@m.Text</li>
+    }
+</ul>
+</Collapsible>
+<Collapsible Title=@Move4Render Collapsed="true" Value="">
+<ul class = "myUL">
+    @foreach (var m in GetLegalMoves())
+    {
+        <li @onclick="@(e => {Entity.Move4 = m.Value; RenderCurrentPokemon();})">@m.Text</li>
+    }
+</ul>
+</Collapsible>
+<br /><p class = "category">Battle Stats</p>
+<form>
+    <label for="Level" class="label-head">Level:</label>
+    <input type="number" name="level" placeholder="Level" class="entryNumerical" value="@LevelRender" @onchange="@(e => {Entity.CurrentLevel = int.Parse((string)e.Value); RenderCurrentPokemon();})"/>
+</form>
+<Collapsible Title="IVs" Collapsed="true" Value="">
+<form>
+    <label for="IV" class="label-head">Attack:</label>
+    <input type="range" name="points" class="form-range" min="0" max="31" @onchange="@(e=> {IV_ATK = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+</form>
+</Collapsible>
+
+@code {
+    protected override Task OnInitializedAsync()
+    {
+        PokemonType = typeof(PA8);
+
+        return base.OnInitializedAsync();
+    }
+}

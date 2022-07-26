@@ -1,0 +1,47 @@
+﻿<div class="collapsible">
+    <div class="title" @onclick="@Toggle">
+        @if (_collapsed)
+        {
+            <span class="oi oi-chevron-right mr-1"></span>
+        }
+        else
+        {
+            <span class="oi oi-chevron-bottom mr-1"></span>
+        }
+        @((MarkupString)Title)
+    </div>
+    @if (!string.IsNullOrEmpty(Value))
+    {
+    <div class="value">
+        <h4><span class="badge badge-success">@Value</span></h4>
+    </div>
+    }
+</div>
+ 
+@if (!_collapsed)
+{
+    <div class="collapsible-panel">
+        @ChildContent
+    </div>
+}
+ 
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public bool Collapsed { get; set; }
+    [Parameter] public string Title { get; set; }
+    [Parameter] public string Value { get; set; }
+
+    private bool _collapsed { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _collapsed = Collapsed;
+        base.OnInitialized();
+    }
+
+    void Toggle()
+    {
+        _collapsed = !_collapsed;
+        Collapsed = _collapsed;
+    }
+}

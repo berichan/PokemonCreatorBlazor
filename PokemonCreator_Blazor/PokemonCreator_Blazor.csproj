@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.0" PrivateAssets="all" />
+    <PackageReference Include="PKHeX.Core" Version="22.6.26" />
+    <PackageReference Include="Tewr.Blazor.FileReader" Version="3.3.1.21360" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="deps\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="../deps/PKHeX.Core.AutoMod">
+      <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
+      <EmbedInteropTypes></EmbedInteropTypes>
+    </Reference>
+  </ItemGroup>
+
+</Project>
