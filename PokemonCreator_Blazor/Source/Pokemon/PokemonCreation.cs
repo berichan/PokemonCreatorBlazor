@@ -255,12 +255,18 @@ namespace PokemonCreator
             Entity.EV_SPE = EV_SPE;
         }
 
-        public async Task OnEntityChanged()
+        public async Task OnNewEntityRequested()
         {
             var newEntityName = GameInfo.GetStrings((int)ProgramLanguage.English).Species[Entity.Species];
             var newEntity = await PokemonHelper.GenerateSetType(newEntityName, PokemonType);
             if (newEntity != null)
                 Entity = newEntity;
+
+            await OnEntityChanged();
+        }
+
+        public async Task OnEntityChanged()
+        {
             RenderForm();
         }
 

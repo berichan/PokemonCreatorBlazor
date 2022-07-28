@@ -20,7 +20,7 @@
 <ul class = "myUL">
     @foreach (var spec in Species.Where(x => x.Text.Contains(SpeciesFilter, StringComparison.InvariantCultureIgnoreCase)))
     {
-        <li @onclick="@(async (e) => {Entity.Species = spec.Value; await OnEntityChanged(); RenderCurrentPokemon();})">@spec.Text @((MarkupString)PokemonSprites.PokemonSpeciesSpriteHTML(spec.Value))</li>
+        <li @onclick="@(async (e) => {Entity.Species = spec.Value; await OnNewEntityRequested(); RenderCurrentPokemon();})">@spec.Text @((MarkupString)PokemonSprites.PokemonSpeciesSpriteHTML(spec.Value))</li>
     }
 </ul>
 </Collapsible>

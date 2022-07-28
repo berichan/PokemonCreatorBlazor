@@ -95,7 +95,7 @@ namespace PokemonCreator
             catch (Exception ex)
 #pragma warning restore CA1031 // Do not catch general exception types
             {
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message + "\n" +ex.InnerException + "\n" + ex.StackTrace);
                 var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
                 Console.WriteLine(msg);
             }
