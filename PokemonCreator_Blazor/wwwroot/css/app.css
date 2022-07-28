@@ -29,6 +29,36 @@
     background-color: #eee;
 }
 
+.myUL-single {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+    grid-auto-rows: 30px;
+    height: 14vh;
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.myUL-single li {
+    border: 1px solid #ddd;
+    margin-top: -1px; /* Prevent double borders */
+    background-color: lightblue;
+    padding: 5px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 14px;
+    color: black;
+    display: block;
+    border-radius: 10px;
+}
+
+.myUL-single li:hover:not(.header) {
+    background-color: #eee;
+}
+
 .collapsible-panel {
     border-radius: 8px;
     border: 1px solid #eee;
@@ -60,6 +90,8 @@
     text-align: center;
     font-size: 14px;
     display: block;
+    -ms-interpolation-mode: nearest-neighbor;
+    image-rendering: -moz-crisp-edges;
 }
 
 .label-left {
@@ -89,6 +121,85 @@ input[type=text] {
     margin: 4px 0;
     box-sizing: border-box;
 }
+
+/*Range start*/
+
+input[type="range"] {
+    margin: auto;
+    -webkit-appearance: none;
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 0; /* iOS */
+}
+
+::-webkit-slider-runnable-track {
+    background: #ddd;
+}
+
+/*
+ * 1. Set to 0 width and remove border for a slider without a thumb
+ * 2. Shadow is negative the full width of the input and has a spread 
+ *    of the width of the input.
+ */
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; /* 1 */
+    height: 30px;
+    background: #fff;
+    box-shadow: -100vw 0 0 100vw dodgerblue; /* 2 */
+    border: 2px solid #999; /* 1 */
+}
+
+::-moz-range-track {
+    height: 30px;
+    background: #ddd;
+}
+
+::-moz-range-thumb {
+    background: #fff;
+    height: 30px;
+    width: 100%;
+    border: 3px solid #999;
+    border-radius: 0 !important;
+    box-shadow: -100vw 0 0 100vw dodgerblue;
+    box-sizing: border-box;
+}
+
+::-ms-fill-lower {
+    background: dodgerblue;
+}
+
+::-ms-thumb {
+    background: #fff;
+    border: 2px solid #999;
+    height: 30px;
+    width: 20px;
+    box-sizing: border-box;
+}
+
+::-ms-ticks-after {
+    display: none;
+}
+
+::-ms-ticks-before {
+    display: none;
+}
+
+::-ms-track {
+    background: #ddd;
+    color: transparent;
+    height: 30px;
+    border: none;
+}
+
+::-ms-tooltip {
+    display: none;
+}
+
+/*Range end*/
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;

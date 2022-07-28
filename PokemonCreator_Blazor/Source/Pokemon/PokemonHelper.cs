@@ -5,6 +5,8 @@ namespace PokemonCreator
 {
     public static class PokemonHelper
     {
+        public static readonly string[] ShinyTypes = new[]{ "None", "Star", "Square" };
+
         public static async Task<PKM?> GetEmptyPokemon<T>() where T : PKM, new()
         {
             return await GenerateSet<T>("Pikachu\nShiny: Yes");
@@ -99,6 +101,16 @@ namespace PokemonCreator
             }
 
             return null;
+        }
+        
+        public static void SetShinyType(PKM Entity, string ShinyState)
+        {
+            if (ShinyState == ShinyTypes[0])
+                CommonEdits.SetIsShiny(Entity, false);
+            if (ShinyState == ShinyTypes[1])
+                CommonEdits.SetShiny(Entity, Shiny.AlwaysStar);
+            if (ShinyState == ShinyTypes[2])
+                CommonEdits.SetShiny(Entity, Shiny.AlwaysSquare);
         }
     }
 }

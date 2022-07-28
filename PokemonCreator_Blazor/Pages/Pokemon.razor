@@ -12,25 +12,80 @@
 <button @onclick=ReadFile>Read file</button>
 
 <br /><br />
+<label for="Pokemon" class="label-head">@((MarkupString)PokemonSprites.PokemonEntitySpriteHTML(Entity, true))</label>
 <Collapsible Title=@PokemonNameRender Collapsed="true" Value="">
+<form>
+    <input type="text" name="filterSpecies" placeholder="Search" class="entryNumerical" @oninput="@(e=>SpeciesFilter=e.Value.ToString())"/>
+</form>
 <ul class = "myUL">
-    @foreach (var spec in Species)
+    @foreach (var spec in Species.Where(x => x.Text.Contains(SpeciesFilter, StringComparison.InvariantCultureIgnoreCase)))
     {
-        <li @onclick="@(e => {Entity.Species = spec.Value; RenderCurrentPokemon();})">@spec.Text @((MarkupString)PokemonSprites.PokemonBaseSpriteHTML(spec.Value))</li>
+        <li @onclick="@(async (e) => {Entity.Species = spec.Value; await OnEntityChanged(); RenderCurrentPokemon();})">@spec.Text @((MarkupString)PokemonSprites.PokemonSpeciesSpriteHTML(spec.Value))</li>
     }
 </ul>
 </Collapsible>
+@if (FormValueRender != string.Empty)
+{
+    <Collapsible Title=@FormValueRender Collapsed="true" Value="">
+    <ul class = "myUL-single" >
+        @foreach (var form in Forms)
+        {
+            <li @onclick="@(e => {FormValueRender = form; RenderCurrentPokemon();})">@form</li>
+        }
+    </ul>
+    </Collapsible>
+    @if (FormArgumentRender != string.Empty)
+    {
+        
+        <Collapsible Title=@FormArgumentRender Collapsed="true" Value="">
+        <ul class = "myUL-single" >
+            @foreach (var form in FormArgs)
+            {
+                <li @onclick="@(e => {FormArgumentRender = form; RenderCurrentPokemon();})">@form</li>
+            }
+        </ul>
+        </Collapsible>
+    }
+}
 @if (CanHoldItems)
 {
     <Collapsible Title=@PokemonItemRender Collapsed="true" Value="">
+        <form>
+            <input type="text" name="filterItem" placeholder="Search" class="entryNumerical" @oninput="@(e=>HeldItemFilter=e.Value.ToString())"/>
+        </form>
         <ul class = "myUL">
-            @foreach (var it in Items)
+            @foreach (var it in Items.Where(x => x.Text.Contains(HeldItemFilter, StringComparison.InvariantCultureIgnoreCase)))
             {
                 <li @onclick="@(e => {Entity.HeldItem = it.Value; RenderCurrentPokemon();})">@it.Text @((MarkupString)PokemonSprites.PokemonItemSpriteHTML(it.Value))</li>
             }
         </ul>
     </Collapsible>
 }
+<Collapsible Title=@PokemonAbilityRender Collapsed="true" Value="">
+<ul class = "myUL-single" >
+    @foreach (var abil in AbilityChoices)
+    {
+        <li @onclick="@(e => {Entity.Ability = abil.Value; RenderCurrentPokemon();})">@abil.Text</li>
+    }
+</ul>
+</Collapsible>
+<br />
+<Collapsible Title="Cosmetics" Collapsed="true" Value="">
+<label for="Shiny" class="label-head">@($"Shiny ({ShinyTypeRender}):")</label>
+<ul class = "myUL-single" >
+    @foreach (var shinyT in PokemonHelper.ShinyTypes)
+    {
+        <li @onclick="@(e => {PokemonHelper.SetShinyType(Entity, shinyT); RenderCurrentPokemon();})">@shinyT</li>
+    }
+</ul>
+<label for="Ball" class="label-head">@($"Ball ({BallRender}):")</label>
+<ul class = "myUL-single" >
+    @foreach (var ball in Balls)
+    {
+        <li @onclick="@(e => {Entity.Ball = ball.Value; RenderCurrentPokemon();})">@ball.Text @((MarkupString)PokemonSprites.PokemonBallSpriteHTML(ball.Value))</li>
+    }
+</ul>
+</Collapsible>
 <br /><p class = "category">Moves</p>
 <Collapsible Title=@Move1Render Collapsed="true" Value="">
 <ul class = "myUL">
@@ -65,21 +120,58 @@
 </ul>
 </Collapsible>
 <br /><p class = "category">Battle Stats</p>
+<Collapsible Title=@(NatureRender + " Nature") Collapsed="true" Value="">
+<ul class = "myUL">
+    @foreach (var nature in Natures)
+    {
+        <li @onclick="@(e => {Entity.Nature = nature.Value; RenderCurrentPokemon();})">@nature.Text</li>
+    }
+</ul>
+</Collapsible>
 <form>
     <label for="Level" class="label-head">Level:</label>
     <input type="number" name="level" placeholder="Level" class="entryNumerical" value="@LevelRender" @onchange="@(e => {Entity.CurrentLevel = int.Parse((string)e.Value); RenderCurrentPokemon();})"/>
 </form>
 <Collapsible Title="IVs" Collapsed="true" Value="">
 <form>
-    <label for="IV" class="label-head">Attack:</label>
-    <input type="range" name="points" class="form-range" min="0" max="31" @onchange="@(e=> {IV_ATK = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="IV" class="label-head">HP: @IV_HP.ToString()/31</label>
+    <input type="range" name="IV" min="0" max="31" value="@IV_HP" @oninput="@(e=> {IV_HP = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="IV" class="label-head">ATK: @IV_ATK.ToString()/31</label>
+    <input type="range" name="IV" min="0" max="31" value="@IV_ATK" @oninput="@(e=> {IV_ATK = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="IV" class="label-head">DEF: @IV_DEF.ToString()/31</label>
+    <input type="range" name="IV" min="0" max="31" value="@IV_DEF" @oninput="@(e=> {IV_DEF = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="IV" class="label-head">SPA: @IV_SPA.ToString()/31</label>
+    <input type="range" name="IV" min="0" max="31" value="@IV_SPA" @oninput="@(e=> {IV_SPA = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="IV" class="label-head">SPD: @IV_SPD.ToString()/31</label>
+    <input type="range" name="IV" min="0" max="31" value="@IV_SPD" @oninput="@(e=> {IV_SPD = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="IV" class="label-head">SPE: @IV_SPE.ToString()/31</label>
+    <input type="range" name="IV" min="0" max="31" value="@IV_SPE" @oninput="@(e=> {IV_SPE = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+</form>
+</Collapsible>
+
+<Collapsible Title="EVs" Collapsed="true" Value="">
+<form>
+    <label for="EV" class="label-head">HP: @EV_HP.ToString()/252</label>
+    <input type="range" name="EV" min="0" max="252" value="@EV_HP" @oninput="@(e=> {EV_HP = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="EV" class="label-head">ATK: @EV_ATK.ToString()/252</label>
+    <input type="range" name="EV" min="0" max="252" value="@EV_ATK" @oninput="@(e=> {EV_ATK = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="EV" class="label-head">DEF: @EV_DEF.ToString()/252</label>
+    <input type="range" name="EV" min="0" max="252" value="@EV_DEF" @oninput="@(e=> {EV_DEF = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="EV" class="label-head">SPA: @EV_SPA.ToString()/252</label>
+    <input type="range" name="EV" min="0" max="252" value="@EV_SPA" @oninput="@(e=> {EV_SPA = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="EV" class="label-head">SPD: @EV_SPD.ToString()/252</label>
+    <input type="range" name="EV" min="0" max="252" value="@EV_SPD" @oninput="@(e=> {EV_SPD = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <label for="EV" class="label-head">SPE: @EV_SPE.ToString()/252</label>
+    <input type="range" name="EV" min="0" max="252" value="@EV_SPE" @oninput="@(e=> {EV_SPE = int.Parse((string)e.Value); BindNumerics(); RenderCurrentPokemon();})" >
+    <br />
+    <p style="@(SumEV>510?"color:red;font-weight: bold":"color:green")">@(SumEV + "/510")</p>
 </form>
 </Collapsible>
 
 @code {
     protected override Task OnInitializedAsync()
     {
-        PokemonType = typeof(PA8);
+        PokemonType = typeof(PK8);
 
         return base.OnInitializedAsync();
     }
